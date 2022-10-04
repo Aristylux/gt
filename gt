@@ -36,7 +36,32 @@ function CheckArgs () {
 	return 0
 }
 
-#CheckPath:
+#CheckPath
+function CheckPath () {
+	echod "CheckPath : $Path : $HOME"
+	case $PWD in
+		"$HOME"*)
+			echod "contain $HOME"
+			;;
+		*)
+			echod "not contain $HOME"
+			;;
+	esac
+	echod "CheckPath : end"
+	case $Path in
+		".."*|"./"*|"/"|"-")
+			echo "$Path"
+			exit 0
+			;;
+		"")
+			echo "$HOME"
+			exit 0
+			;;
+	esac
+}
+
+
+#FormatPath:
 #remove the last "/" if contain last "/"
 #return: $PathFormatted
 function FormatPath () {
@@ -67,32 +92,7 @@ fi
 Path="$*"
 echod "read : $Path"
 
-case $Path in
-	".."*)
-		echo "$Path"
-		exit 0
-		;;
-	"./*")
-		echo "$Path"
-		exit 0
-		;;
-	"")
-		echo "$HOME"
-		exit 0
-		;;
-	"/")
-		echo "/"
-		exit 0
-		;;
-	"-")
-		echo "-"
-		exit 0
-		;;
-	#[!"$HOME"]*)
-	#	echo "$Path"
-	#	exit 0
-	#	;;
-esac
+CheckPath
 
 FormatPath 
 echod "Formatted path: $PathFormatted"
@@ -100,7 +100,7 @@ echod "Formatted path: $PathFormatted"
 #research directory $1
 ListDir=$(find $PWD -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$PathFormatted")
 
-echod "$ListDir"
+#echod "$ListDir"
 
 if [ "$ListDir" = "" ]
 then
@@ -124,7 +124,7 @@ echod "------------------"
 for Dir in $ListDir
 do
 	Position=$(($Position + 1))
-	echod "$Position  - ${#Dir} - $Dir"
+	#echod "$Position  - ${#Dir} - $Dir"
 	LengthDir=${#Dir}
 	if [ $LengthDir -lt $Length ]
 	then
