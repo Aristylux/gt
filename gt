@@ -99,6 +99,41 @@ function CreateList () {
 	fi
 }
 
+function FindDirectory () {
+	declare -i Position=0
+	declare -i PositionDir=0
+
+	#save IFS
+	OldIFS=$IFS
+	IFS=$'\n'
+
+	Arr=($ListDir)
+	FirstElement=${Arr[0]}
+	Length=$((${#FirstElement}+1))
+	
+	echod "$FirstElement  $Length"
+	echod "------------------"
+
+	for Dir in $ListDir
+	do
+		Position=$(($Position + 1))
+		#echod "$Position  - ${#Dir} - $Dir"
+		LengthDir=${#Dir}
+		if [ $LengthDir -lt $Length ]
+		then
+			echod "$LengthDir < $Length" 
+			Length=$LengthDir
+			PositionDir=$Position
+		fi
+	done
+	#restore IFS
+	IFS=$OldIFS
+
+	#Final=$(echo "${Arr[$PositionDir-1]}" | sed 's/ /\\ /g')
+	PathFinal=$(echo "${Arr[$PositionDir-1]}")
+	echod "Final path : $PathFinal"
+}
+
 ## ---- Main program ----
 
 # Variables declarations
@@ -122,34 +157,6 @@ CheckPath
 FormatPath 
 CreateList
 
-#save IFS
-OldIFS=$IFS
-IFS=$'\n'
+FindDirectory
 
-Arr=($ListDir)
-FirstElement=${Arr[0]}
-Length=$((${#FirstElement}+1))
-echod "$FirstElement  $Length"
-Position=0
-PositionDir=0
-echod "------------------"
-
-for Dir in $ListDir
-do
-	Position=$(($Position + 1))
-	#echod "$Position  - ${#Dir} - $Dir"
-	LengthDir=${#Dir}
-	if [ $LengthDir -lt $Length ]
-	then
-		echod "$LengthDir < $Length" 
-		Length=$LengthDir
-		PositionDir=$Position
-	fi
-done
-IFS=$OldIFS
-
-#Final=$(echo "${Arr[$PositionDir-1]}" | sed 's/ /\\ /g')
-PathFinal=$(echo "${Arr[$PositionDir-1]}")
-
-echod "Final path : $PathFinal"
 echo "$PathFinal"
