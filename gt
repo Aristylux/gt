@@ -73,7 +73,6 @@ function CheckPath () {
 	esac
 }
 
-
 #FormatPath:
 #remove the last "/" if contain last "/"
 #return: $PathFormatted
@@ -83,6 +82,20 @@ function FormatPath () {
 		PathFormatted=$(echo "$Path" | sed 's/.$//')
 	else
 		PathFormatted="$Path"
+	fi
+	echod "Formatted path: $PathFormatted"
+}
+
+#research directory $Path
+function CreateList () {
+	ListDir=$(find $PWD -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$PathFormatted")
+
+	#echod "$ListDir"
+
+	if [ "$ListDir" = "" ]
+	then
+		echod "List empty"
+		exit 0
 	fi
 }
 
@@ -106,26 +119,13 @@ Path="$*"
 echod "read : $Path"
 
 CheckPath
-
 FormatPath 
-echod "Formatted path: $PathFormatted"
-
-#research directory $1
-ListDir=$(find $PWD -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$PathFormatted")
-
-#echod "$ListDir"
-
-if [ "$ListDir" = "" ]
-then
-	echod "List empty"
-	exit 0
-fi
+CreateList
 
 #save IFS
 OldIFS=$IFS
 IFS=$'\n'
 
-NbrDir=$(echo "$ListDir" | wc -l)
 Arr=($ListDir)
 FirstElement=${Arr[0]}
 Length=$((${#FirstElement}+1))
@@ -146,13 +146,10 @@ do
 		PositionDir=$Position
 	fi
 done
-
 IFS=$OldIFS
 
-echod "Final path : ${Arr[$PositionDir-1]}"
-
-#echo "-> $PositionDir : ${Arr[$PositionDir-1]}"
 #Final=$(echo "${Arr[$PositionDir-1]}" | sed 's/ /\\ /g')
 PathFinal=$(echo "${Arr[$PositionDir-1]}")
+
+echod "Final path : $PathFinal"
 echo "$PathFinal"
-#echo "\"${Arr[$PositionDir-1]}\""
