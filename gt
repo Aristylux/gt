@@ -36,18 +36,25 @@ function CheckArgs () {
 	return 0
 }
 
-#CheckPath
-function CheckPath () {
-	echod "CheckPath : $Path : $HOME"
+function CheckHome () {
 	case $PWD in
 		"$HOME"*)
-			echod "contain $HOME"
+			return 0
 			;;
 		*)
-			echod "not contain $HOME"
+			return 1
 			;;
 	esac
-	echod "CheckPath : end"
+}
+
+#CheckPath
+function CheckPath () {
+	CheckHome
+	if [ $? -eq 1 ]
+	then
+		echo "$Path"
+		exit 0
+	fi
 	case $Path in
 		".."*|"./"*|"/"|"-")
 			echo "$Path"
