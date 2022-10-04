@@ -36,10 +36,48 @@ function CheckArgs () {
 	return 0
 }
 
-#CheckPath:
+#CheckHome
+#check if we are in $HOME or not
+#return :
+# -> 0 if yes
+# -> 1 not
+function CheckHome () {
+	case $PWD in
+		"$HOME"*)
+			return 0
+			;;
+		*)
+			return 1
+			;;
+	esac
+}
+
+#CheckPath
+#verify condition for execute script
+function CheckPath () {
+	CheckHome
+	if [ $? -eq 1 ]
+	then
+		echo "$Path"
+		exit 0
+	fi
+	case $Path in
+		".."*|"./"*|"/"|"-")
+			echo "$Path"
+			exit 0
+			;;
+		"")
+			echo "$HOME"
+			exit 0
+			;;
+	esac
+}
+
+
+#FormatPath:
 #remove the last "/" if contain last "/"
 #return: $PathFormatted
-function CheckPath () {
+function FormatPath () {
 	if [ "${Path:${#Path}-1:1}" = "/" ]
 	then
 		PathFormatted=$(echo "$Path" | sed 's/.$//')
@@ -67,43 +105,19 @@ fi
 Path="$*"
 echod "read : $Path"
 
-case $Path in
-	".."*)
-		echo "$Path"
-		exit 0
-		;;
-	"./*")
-		echo "$Path"
-		exit 0
-		;;
-	"")
-		echo "$HOME"
-		exit 0
-		;;
-	"/")
-		echo "/"
-		exit 0
-		;;
-	"-")
-		echo "-"
-		exit 0
-		;;
-	#[!"$HOME"]*)
-	#	echo "$Path"
-	#	exit 0
-	#	;;
-esac
+CheckPath
 
-CheckPath 
-echod "PathFormatted: $PathFormatted"
+FormatPath 
+echod "Formatted path: $PathFormatted"
 
 #research directory $1
 ListDir=$(find $PWD -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$PathFormatted")
 
-echod "$ListDir"
+#echod "$ListDir"
 
 if [ "$ListDir" = "" ]
 then
+	echod "List empty"
 	exit 0
 fi
 
@@ -123,7 +137,7 @@ echod "------------------"
 for Dir in $ListDir
 do
 	Position=$(($Position + 1))
-	echod "$Position  - ${#Dir} - $Dir"
+	#echod "$Position  - ${#Dir} - $Dir"
 	LengthDir=${#Dir}
 	if [ $LengthDir -lt $Length ]
 	then
@@ -135,7 +149,7 @@ done
 
 IFS=$OldIFS
 
-echod ${Arr[$PositionDir-1]}
+echod "Final path : ${Arr[$PositionDir-1]}"
 
 #echo "-> $PositionDir : ${Arr[$PositionDir-1]}"
 #Final=$(echo "${Arr[$PositionDir-1]}" | sed 's/ /\\ /g')
