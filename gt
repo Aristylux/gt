@@ -36,6 +36,11 @@ function CheckArgs () {
 	return 0
 }
 
+#CheckHome
+#check if we are in $HOME or not
+#return :
+# -> 0 if yes
+# -> 1 not
 function CheckHome () {
 	case $PWD in
 		"$HOME"*)
@@ -48,6 +53,7 @@ function CheckHome () {
 }
 
 #CheckPath
+#verify condition for execute script
 function CheckPath () {
 	CheckHome
 	if [ $? -eq 1 ]
