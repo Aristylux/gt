@@ -22,15 +22,29 @@ function echod () {
 	fi
 }
 
+# Check args
+function CheckArgs () {
+	case $1 in
+		--help|-h)
+			PrintHelp
+			;;
+		-d)
+			Debug="True"
+			return 1
+			;;
+	esac
+	return 0
+}
+
 #CheckPath:
 #remove the last "/" if contain last "/"
-#return: $FinalPath
+#return: $PathFormatted
 function CheckPath () {
 	if [ "${Path:${#Path}-1:1}" = "/" ]
 	then
-		FinalPath=$(echo "$Path" | sed 's/.$//')
+		PathFormatted=$(echo "$Path" | sed 's/.$//')
 	else
-		FinalPath="$Path"
+		PathFormatted="$Path"
 	fi
 }
 
@@ -39,19 +53,16 @@ function CheckPath () {
 # Variables declarations
 Debug="False"
 Path=""
-FinalPath=""
+PathFormatted=""
+PathFinal=""
 ListDir=""
 
-# Check args
-case $1 in
-	--help|-h)
-		PrintHelp
-		;;
-	-d)
-		Debug="True"
-		shift
-		;;
-esac
+CheckArgs "$1"
+if [ $? -eq 1 ]
+then
+	echod "shift"
+	shift
+fi
 
 Path="$*"
 echod "read : $Path"
@@ -83,13 +94,11 @@ case $Path in
 	#	;;
 esac
 
-echod "path : $Path"
 CheckPath 
-echod "path final : $FinalPath"
-exit 0
+echod "PathFormatted: $PathFormatted"
 
 #research directory $1
-ListDir=$(find $PWD -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$FinalPath")
+ListDir=$(find $PWD -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$PathFormatted")
 
 echod "$ListDir"
 
@@ -114,11 +123,11 @@ echod "------------------"
 for Dir in $ListDir
 do
 	Position=$(($Position + 1))
-	#echo "$Position  - ${#Dir} - $Dir"
+	echod "$Position  - ${#Dir} - $Dir"
 	LengthDir=${#Dir}
 	if [ $LengthDir -lt $Length ]
 	then
-		#echo "$LengthDir < $Length" 
+		echod "$LengthDir < $Length" 
 		Length=$LengthDir
 		PositionDir=$Position
 	fi
@@ -130,6 +139,6 @@ echod ${Arr[$PositionDir-1]}
 
 #echo "-> $PositionDir : ${Arr[$PositionDir-1]}"
 #Final=$(echo "${Arr[$PositionDir-1]}" | sed 's/ /\\ /g')
-Final=$(echo "${Arr[$PositionDir-1]}")
-echo "$Final"
+PathFinal=$(echo "${Arr[$PositionDir-1]}")
+echo "$PathFinal"
 #echo "\"${Arr[$PositionDir-1]}\""
