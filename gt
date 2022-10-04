@@ -14,6 +14,7 @@ function Error () {
 	exit $1	
 }
 
+#echo for debug
 function echod () {
 	if [ "$Debug" = "True" ]
 	then
@@ -21,22 +22,33 @@ function echod () {
 	fi
 }
 
-## Main program
+#CheckPath:
+#
+#return: $FinalPath
+function CheckPath () {
+	LengthPath=${#Path}
+	LengthPath=$(($LengthPath - 1))
+	#remove the last "/"
+	if [ "${Path:${#Path}-1:1}" = "/" ]
+	then
+		FinalPath=$(echo "$Path" | cut -c 1-$LengthPath)
+	else
+		FinalPath="$Path"
+	fi
+}
+
+## ---- Main program ----
 
 # Variables declarations
-
 Debug="False"
 Path=""
 FinalPath=""
+ListDir=""
 
 # Check args
-
 case $1 in
 	--help|-h)
 		PrintHelp
-		;;
-	-m)
-		echo "Modify value $2 to $3"
 		;;
 	-d)
 		Debug="True"
@@ -74,18 +86,7 @@ case $Path in
 	#	;;
 esac
 
-LengthPath=${#Path}
-LengthPath=$(($LengthPath - 1))
-#remove the last "/"
-if [ "${Path:${#Path}-1:1}" = "/" ]
-then
-	FinalPath=$(echo "$Path" | cut -c 1-$LengthPath)
-else
-    FinalPath="$Path"
-fi
-
 #research directory $1
-
 ListDir=$(find $PWD -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$FinalPath")
 
 echod "$ListDir"
@@ -95,9 +96,9 @@ then
 	exit 0
 fi
 
+#save IFS
 OldIFS=$IFS
 IFS=$'\n'
-
 
 NbrDir=$(echo "$ListDir" | wc -l)
 Arr=($ListDir)
@@ -107,7 +108,6 @@ echod "$FirstElement  $Length"
 Position=0
 PositionDir=0
 echod "------------------"
-
 
 for Dir in $ListDir
 do
@@ -131,10 +131,3 @@ echod ${Arr[$PositionDir-1]}
 Final=$(echo "${Arr[$PositionDir-1]}")
 echo "$Final"
 #echo "\"${Arr[$PositionDir-1]}\""
-
-#Pwd=$(find $PWD -type d -iname *"$1"*)
-#echo "$Pwd"
-#cd $Pwd
-#exec bash
-
-#cd ${Arr[$PositionDir-1]}
