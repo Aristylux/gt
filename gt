@@ -23,15 +23,12 @@ function echod () {
 }
 
 #CheckPath:
-#
+#remove the last "/" if contain last "/"
 #return: $FinalPath
 function CheckPath () {
-	LengthPath=${#Path}
-	LengthPath=$(($LengthPath - 1))
-	#remove the last "/"
 	if [ "${Path:${#Path}-1:1}" = "/" ]
 	then
-		FinalPath=$(echo "$Path" | cut -c 1-$LengthPath)
+		FinalPath=$(echo "$Path" | sed 's/.$//')
 	else
 		FinalPath="$Path"
 	fi
