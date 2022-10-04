@@ -86,6 +86,11 @@ case $Path in
 	#	;;
 esac
 
+echod "path : $Path"
+CheckPath 
+echod "path final : $FinalPath"
+exit 0
+
 #research directory $1
 ListDir=$(find $PWD -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$FinalPath")
 
