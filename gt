@@ -1,0 +1,140 @@
+#!/bin/bash
+
+function PrintHelp () {
+	echo "Usage : gt [path]"
+    echo "  or:   gt -d "
+    echo "  or:   gt -h"
+    echo -e "\n\t-d\tdebug mode"
+    echo -e "\t-h\tdisplay this help and exit"
+	exit 0
+}
+
+function Error () {
+	echo "Error - Syntax invalid. --help or -h for help"
+	exit $1	
+}
+
+function echod () {
+	if [ "$Debug" = "True" ]
+	then
+		echo "$*"
+	fi
+}
+
+## Main program
+
+# Variables declarations
+
+Debug="False"
+Path=""
+FinalPath=""
+
+# Check args
+
+case $1 in
+	--help|-h)
+		PrintHelp
+		;;
+	-m)
+		echo "Modify value $2 to $3"
+		;;
+	-d)
+		Debug="True"
+		shift
+		;;
+esac
+
+Path="$*"
+echod "read : $Path"
+
+case $Path in
+	".."*)
+		echo "$Path"
+		exit 0
+		;;
+	"./*")
+		echo "$Path"
+		exit 0
+		;;
+	"")
+		echo "$HOME"
+		exit 0
+		;;
+	"/")
+		echo "/"
+		exit 0
+		;;
+	"-")
+		echo "-"
+		exit 0
+		;;
+	#[!"$HOME"]*)
+	#	echo "$Path"
+	#	exit 0
+	#	;;
+esac
+
+LengthPath=${#Path}
+LengthPath=$(($LengthPath - 1))
+#remove the last "/"
+if [ "${Path:${#Path}-1:1}" = "/" ]
+then
+	FinalPath=$(echo "$Path" | cut -c 1-$LengthPath)
+else
+    FinalPath="$Path"
+fi
+
+#research directory $1
+
+ListDir=$(find $PWD -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$FinalPath")
+
+echod "$ListDir"
+
+if [ "$ListDir" = "" ]
+then
+	exit 0
+fi
+
+OldIFS=$IFS
+IFS=$'\n'
+
+
+NbrDir=$(echo "$ListDir" | wc -l)
+Arr=($ListDir)
+FirstElement=${Arr[0]}
+Length=$((${#FirstElement}+1))
+echod "$FirstElement  $Length"
+Position=0
+PositionDir=0
+echod "------------------"
+
+
+for Dir in $ListDir
+do
+	Position=$(($Position + 1))
+	#echo "$Position  - ${#Dir} - $Dir"
+	LengthDir=${#Dir}
+	if [ $LengthDir -lt $Length ]
+	then
+		#echo "$LengthDir < $Length" 
+		Length=$LengthDir
+		PositionDir=$Position
+	fi
+done
+
+IFS=$OldIFS
+
+echod ${Arr[$PositionDir-1]}
+
+#echo "-> $PositionDir : ${Arr[$PositionDir-1]}"
+#Final=$(echo "${Arr[$PositionDir-1]}" | sed 's/ /\\ /g')
+Final=$(echo "${Arr[$PositionDir-1]}")
+echo "$Final"
+#echo "\"${Arr[$PositionDir-1]}\""
+
+#Pwd=$(find $PWD -type d -iname *"$1"*)
+#echo "$Pwd"
+#cd $Pwd
+#exec bash
+
+#cd ${Arr[$PositionDir-1]}
