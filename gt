@@ -39,7 +39,7 @@ function CheckArgs () {
 #CheckPath:
 #remove the last "/" if contain last "/"
 #return: $PathFormatted
-function CheckPath () {
+function FormatPath () {
 	if [ "${Path:${#Path}-1:1}" = "/" ]
 	then
 		PathFormatted=$(echo "$Path" | sed 's/.$//')
@@ -94,8 +94,8 @@ case $Path in
 	#	;;
 esac
 
-CheckPath 
-echod "PathFormatted: $PathFormatted"
+FormatPath 
+echod "Formatted path: $PathFormatted"
 
 #research directory $1
 ListDir=$(find $PWD -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$PathFormatted")
@@ -104,6 +104,7 @@ echod "$ListDir"
 
 if [ "$ListDir" = "" ]
 then
+	echod "List empty"
 	exit 0
 fi
 
@@ -135,7 +136,7 @@ done
 
 IFS=$OldIFS
 
-echod ${Arr[$PositionDir-1]}
+echod "Final path : ${Arr[$PositionDir-1]}"
 
 #echo "-> $PositionDir : ${Arr[$PositionDir-1]}"
 #Final=$(echo "${Arr[$PositionDir-1]}" | sed 's/ /\\ /g')
