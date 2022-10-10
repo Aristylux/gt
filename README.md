@@ -34,7 +34,7 @@ alias cd='f(){ cd "$(echo $(gt $1))";  unset -f f; }; f'
 
 Just for help me
 
-# Exemple
+# Examples
 
 1. You are in **/home/$USER/**
 

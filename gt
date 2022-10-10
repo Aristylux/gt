@@ -11,7 +11,7 @@ function PrintHelp () {
 
 function Error () {
 	echo "Error - Syntax invalid. --help or -h for help"
-	exit $1	
+	exit "$1"	
 }
 
 #echo for debug
@@ -80,6 +80,8 @@ function FormatPath () {
 	if [ "${Path:${#Path}-1:1}" = "/" ]
 	then
 		PathFormatted=$(echo "$Path" | sed 's/.$//')
+		#PathFormatted=${$Path//.$//}
+		#${variable//search/replace}
 	else
 		PathFormatted="$Path"
 	fi
@@ -88,7 +90,7 @@ function FormatPath () {
 
 #research directory $Path
 function CreateList () {
-	ListDir=$(find $PWD -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$PathFormatted")
+	ListDir=$(find "$PWD" -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$PathFormatted")
 
 	#echod "$ListDir"
 
@@ -116,10 +118,10 @@ function FindDirectory () {
 
 	for Dir in $ListDir
 	do
-		Position=$(($Position + 1))
+		Position=$((Position + 1))
 		#echod "$Position  - ${#Dir} - $Dir"
 		LengthDir=${#Dir}
-		if [ $LengthDir -lt $Length ]
+		if [ "$LengthDir" -lt $Length ]
 		then
 			echod "$LengthDir < $Length" 
 			Length=$LengthDir
@@ -130,7 +132,7 @@ function FindDirectory () {
 	IFS=$OldIFS
 
 	#Final=$(echo "${Arr[$PositionDir-1]}" | sed 's/ /\\ /g')
-	PathFinal=$(echo "${Arr[$PositionDir-1]}")
+	PathFinal="${Arr[$PositionDir-1]}"
 	echod "Final path : $PathFinal"
 }
 
