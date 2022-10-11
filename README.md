@@ -32,7 +32,9 @@ alias cd='f(){ cd "$(echo $(gt $1))";  unset -f f; }; f'
 
 # Why I created `gt` ?
 
-Just for help me
+Just for help me,  
+
+And Move faster in the file system.
 
 # Examples
 

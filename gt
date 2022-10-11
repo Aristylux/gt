@@ -119,7 +119,7 @@ function FindDirectory () {
 	for Dir in $ListDir
 	do
 		Position=$((Position + 1))
-		#echod "$Position  - ${#Dir} - $Dir"
+		echod "$Position  - ${#Dir} - $Dir"
 		LengthDir=${#Dir}
 		if [ "$LengthDir" -lt $Length ]
 		then
