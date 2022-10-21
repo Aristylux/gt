@@ -36,12 +36,13 @@ function CheckArgs () {
 	return 0
 }
 
-#CheckHome
+#CheckHome:
 #check if we are in $HOME or not
 #return :
 # -> 0 if yes
 # -> 1 not
 function CheckHome () {
+	echod "CheckHome"
 	case $PWD in
 		"$HOME"*)
 			return 0
@@ -52,9 +53,18 @@ function CheckHome () {
 	esac
 }
 
-#CheckPath
-#verify condition for execute script
+#CheckPath:
+#Verify conditions for execute script:
+# - if "cd" -> go home
+# - if "/" (root) -> don't execute script
+# - if "cd .." | "cd ./" (aka specials comands) -> don't execute script
 function CheckPath () {
+	echod "CheckPath"
+	if [ "$Path" = "" ]
+	then
+		echo "$HOME"
+		exit 0
+	fi
 	CheckHome
 	if [ $? -eq 1 ]
 	then
@@ -66,17 +76,14 @@ function CheckPath () {
 			echo "$Path"
 			exit 0
 			;;
-		"")
-			echo "$HOME"
-			exit 0
-			;;
 	esac
 }
 
 #FormatPath:
-#remove the last "/" if contain last "/"
-#return: $PathFormatted
+#Remove the last "/" if contain last "/"
+#Return: $PathFormatted
 function FormatPath () {
+	echod "FormatPath"
 	if [ "${Path:${#Path}-1:1}" = "/" ]
 	then
 		PathFormatted=$(echo "$Path" | sed 's/.$//')
@@ -148,12 +155,12 @@ ListDir=""
 CheckArgs "$1"
 if [ $? -eq 1 ]
 then
-	echod "shift"
+	echod "Shift"
 	shift
 fi
 
 Path="$*"
-echod "read : $Path"
+echod "Path: $Path"
 
 CheckPath
 FormatPath 
