@@ -30,7 +30,7 @@ alias cd='f(){ cd "$(echo $(gt $1))";  unset -f f; }; f'
 
 2. Restart your console.
 
-# Why I created `gt` ?
+# Why did I create `gt` ?
 
 Just for help me,  
 
