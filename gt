@@ -72,7 +72,7 @@ function CheckPath () {
 		exit 0
 	fi
 	case $Path in
-		".."*|"./"*|"/"|"-")
+		".."*|"./"*|"/"*|"-")
 			echo "$Path"
 			exit 0
 			;;
