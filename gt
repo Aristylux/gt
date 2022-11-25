@@ -18,7 +18,7 @@ function Error () {
 function echod () {
 	if [ "$Debug" = "True" ]
 	then
-		echo "$*"
+		echo -e "$*"
 	fi
 }
 
@@ -42,7 +42,7 @@ function CheckArgs () {
 # -> 0 if yes
 # -> 1 not
 function CheckHome () {
-	echod "CheckHome"
+	echod "\nf-CheckHome"
 	case $PWD in
 		"$HOME"*)
 			return 0
@@ -59,7 +59,7 @@ function CheckHome () {
 # - if "/" (root) -> don't execute script
 # - if "cd .." | "cd ./" (aka specials comands) -> don't execute script
 function CheckPath () {
-	echod "CheckPath"
+	echod "\nf-CheckPath"
 	if [ "$Path" = "" ]
 	then
 		echo "$HOME"
@@ -83,7 +83,6 @@ function CheckPath () {
 #Remove the last "/" if contain last "/"
 #Return: $PathFormatted
 function FormatPath () {
-	echod "FormatPath"
 	if [ "${Path:${#Path}-1:1}" = "/" ]
 	then
 		PathFormatted=$(echo "$Path" | sed 's/.$//')
@@ -92,23 +91,79 @@ function FormatPath () {
 	else
 		PathFormatted="$Path"
 	fi
-	echod "Formatted path: $PathFormatted"
+	echod "\n--Formatted path--"
+	echod "$PathFormatted"
 }
 
 #research directory $Path
 function CreateList () {
-	ListDir=$(find "$PWD" -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$PathFormatted")
+	#ListDir=$(find "$PWD" -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$PathFormatted")
+	ListDirPath=$(find "$PWD" -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \))
 
-	#echod "$ListDir"
-
-	if [ "$ListDir" = "" ]
+	if [ "$ListDirPath" = "" ]
 	then
 		echod "List empty"
 		exit 0
 	fi
+
+	lenPwd=$(pwd | wc -c)
+	lenPwd=$((lenPwd + 1))
+
+	ListDir="$(echo "$ListDirPath" | cut -c ${lenPwd}-)"
+	echod "\n--List directories--"
+	echod "$ListDir"
+
+	
+	ListDir="$(echo "$ListDir" | grep -i "$PathFormatted")"
+	echod "\n--List Dir Grep--"
+	echod "$ListDir"
+
+	#DeleteSameChar
+	#nbr=$?
+#
+	#if [ $nbr -ne 0 ]
+	#then
+	#	#echod "${#ListDir}"
+#
+	#	ListDir="$(echo "$ListDir" | cut -c ${nbr}- | grep -i "$PathFormatted")"
+#
+#
+	#	echod "\n--List Dir Final--"
+	#	echod "$ListDir"
+#
+	#	#LenPwd=$(find "$PWD" -type d -name "*$ListDir")
+#
+	#	echod "\n--Final path..--"
+	#	echo "$LenPwd"
+	#	exit 0
+	#fi
+
+}
+
+function DeleteSameChar () {
+	nbr=0
+
+	Arr=($ListDir)
+	ref=${Arr[0]}
+
+	for ((i=0; i<${#ref}; i++))
+	do
+		nbr=$((nbr + 1))
+		for dir in $ListDir
+		do
+			if [ "${dir:$i:1}" != "${ref:$i:1}" ]
+			then
+				return $nbr
+			fi
+		done
+	done
+
+	return 0
 }
 
 function FindDirectory () {
+	echod "\nf-FindDirectory"
+
 	declare -i Position=0
 	declare -i PositionDir=0
 
@@ -120,13 +175,13 @@ function FindDirectory () {
 	FirstElement=${Arr[0]}
 	Length=$((${#FirstElement}+1))
 	
-	echod "$FirstElement  $Length"
+	echod "$FirstElement $Length"
 	echod "------------------"
 
 	for Dir in $ListDir
 	do
 		Position=$((Position + 1))
-		echod "$Position  - ${#Dir} - $Dir"
+		echod "$Position - ${#Dir} - $Dir"
 		LengthDir=${#Dir}
 		if [ "$LengthDir" -lt $Length ]
 		then
@@ -140,7 +195,6 @@ function FindDirectory () {
 
 	#Final=$(echo "${Arr[$PositionDir-1]}" | sed 's/ /\\ /g')
 	PathFinal="${Arr[$PositionDir-1]}"
-	echod "Final path : $PathFinal"
 }
 
 ## ---- Main program ----
@@ -155,12 +209,14 @@ ListDir=""
 CheckArgs "$1"
 if [ $? -eq 1 ]
 then
-	echod "Shift"
 	shift
 fi
 
 Path="$*"
-echod "Path: $Path"
+
+echod "\n--Path--"
+echod "$Path"
+
 
 CheckPath
 FormatPath 
@@ -168,5 +224,7 @@ CreateList
 
 FindDirectory
 
+echod "\n--Final path--"
 echo "$PathFinal"
 
+exit 0
