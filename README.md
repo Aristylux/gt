@@ -75,3 +75,25 @@ $ cd works
 $ pwd
 /home/$USER/Documents/MyWorks
 ```
+
+# Development
+
+To validate a version, we need to pass all these tests:
+
+## Test form `home`
+
+> DDE: directory doesn't exist
+
+| Command       | Result                                       |
+| ------------- | -------------------------------------------- |
+| `~$ cd .`     | `~$`                                         |
+| `~$ cd ..`    | `/home/$`                                    |
+| `~$ cd ./`    | `~$`                                         |
+| `~$ cd [DDE]` | `bash: cd: [DDE]: No such file or directory` |
+| `~$ cd doc`   | ``                                           |
+
+* [ ] 
+
+## Test from `root`
+
+* [ ] `~$ cd /`
