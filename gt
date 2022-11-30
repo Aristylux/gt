@@ -188,7 +188,7 @@ function FindDirectory () {
 	OldIFS=$IFS
 	IFS=$'\n'
 
-	Arr=("$ListDir")
+	Arr=($ListDir)
 	FirstElement=${Arr[0]}
 	Length=$((${#FirstElement}+1))
 	
