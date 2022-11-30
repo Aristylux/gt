@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#PrintHelp:
+# Print usage for debug gt
 function PrintHelp () {
 	echo "Usage : gt [path]"
     echo "  or:   gt -d "
@@ -9,12 +11,15 @@ function PrintHelp () {
 	exit 0
 }
 
+#Error:
+# Print Error and exit
 function Error () {
 	echo "Error - Syntax invalid. --help or -h for help"
 	exit "$1"	
 }
 
-#echo for debug
+#echod
+# Enable echo for debug
 function echod () {
 	if [ "$Debug" = "True" ]
 	then
@@ -22,7 +27,10 @@ function echod () {
 	fi
 }
 
-# Check args
+#CheckArgs:
+# Check argument in parameter
+# -h for print help
+# -d to enable debug
 function CheckArgs () {
 	case $1 in
 		--help|-h)
@@ -37,8 +45,8 @@ function CheckArgs () {
 }
 
 #CheckHome:
-#check if we are in $HOME or not
-#return :
+# Check if we are in $HOME or not
+# Return :
 # -> 0 if yes
 # -> 1 not
 function CheckHome () {
@@ -54,7 +62,7 @@ function CheckHome () {
 }
 
 #CheckPath:
-#Verify conditions for execute script:
+# Verify conditions for execute script:
 # - if "cd" -> go home
 # - if "/" (root) -> don't execute script
 # - if "cd .." | "cd ./" (aka specials comands) -> don't execute script
@@ -125,49 +133,51 @@ function CreateList () {
 		exit 0
 	fi
 
-	#DeleteSameChar
-	#nbr=$?
+#	DeleteSameChar
+#	nbr=$?
 #
-	#if [ $nbr -ne 0 ]
-	#then
-	#	#echod "${#ListDir}"
+#	if [ $nbr -ne 0 ]
+#	then
+#		#echod "${#ListDir}"
 #
-	#	ListDir="$(echo "$ListDir" | cut -c ${nbr}- | grep -i "$PathFormatted")"
+#		ListDir="$(echo "$ListDir" | cut -c ${nbr}- | grep -i "$PathFormatted")"
 #
 #
-	#	echod "\n--List Dir Final--"
-	#	echod "$ListDir"
+#		echod "\n--List Dir Final--"
+#		echod "$ListDir"
 #
-	#	#LenPwd=$(find "$PWD" -type d -name "*$ListDir")
+#		#LenPwd=$(find "$PWD" -type d -name "*$ListDir")
 #
-	#	echod "\n--Final path..--"
-	#	echo "$LenPwd"
-	#	exit 0
-	#fi
+#		echod "\n--Final path..--"
+#		echo "$LenPwd"
+#		exit 0
+#	fi
 
 }
 
-function DeleteSameChar () {
-	nbr=0
+#function DeleteSameChar () {
+#	nbr=0
+#
+#	Arr=($ListDir)
+#	ref=${Arr[0]}
+#
+#	for ((i=0; i<${#ref}; i++))
+#	do
+#		nbr=$((nbr + 1))
+#		for dir in $ListDir
+#		do
+#			if [ "${dir:$i:1}" != "${ref:$i:1}" ]
+#			then
+#				return $nbr
+#			fi
+#		done
+#	done
+#
+#	return 0
+#}
 
-	Arr=($ListDir)
-	ref=${Arr[0]}
-
-	for ((i=0; i<${#ref}; i++))
-	do
-		nbr=$((nbr + 1))
-		for dir in $ListDir
-		do
-			if [ "${dir:$i:1}" != "${ref:$i:1}" ]
-			then
-				return $nbr
-			fi
-		done
-	done
-
-	return 0
-}
-
+#FindDirectory:
+# Detect final path
 function FindDirectory () {
 	echod "\nf-FindDirectory"
 
@@ -204,7 +214,9 @@ function FindDirectory () {
 	PathFinal="${Arr[$PositionDir-1]}"
 }
 
-## ---- Main program ----
+## ---------------------- ##
+## ---- Main program ---- ##
+## ---------------------- ##
 
 # Variables declarations
 Debug="False"
@@ -213,24 +225,26 @@ PathFormatted=""
 PathFinal=""
 ListDir=""
 
+# Check arguments (debug,..)
 CheckArgs "$1"
 if [ $? -eq 1 ]
 then
 	shift
 fi
 
+# Get path
 Path="$*"
 
 echod "\n--Path--"
 echod "$Path"
 
-
+# Execute 
 CheckPath
 FormatPath 
 CreateList
-
 FindDirectory
 
+# Final path, done for cd like : $ cd "$PathFinal"
 echod "\n--Final path--"
 echo "$PathFinal"
 
