@@ -118,6 +118,13 @@ function CreateList () {
 	echod "\n--List Dir Grep--"
 	echod "$ListDir"
 
+	if [ "$ListDir" == "" ]
+	then
+		echod "No directory"
+		echo "$Path"
+		exit 0
+	fi
+
 	#DeleteSameChar
 	#nbr=$?
 #
