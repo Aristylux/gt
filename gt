@@ -2,7 +2,7 @@
 
 #PrintHelp:
 # Print usage for debug gt
-function PrintHelp () {
+PrintHelp () {
 	echo "Usage : gt [path]"
     echo "  or:   gt -d "
     echo "  or:   gt -h"
@@ -13,14 +13,14 @@ function PrintHelp () {
 
 #Error:
 # Print Error and exit
-function Error () {
+Error () {
 	echo "Error - Syntax invalid. --help or -h for help"
 	exit "$1"	
 }
 
 #echod
 # Enable echo for debug
-function echod () {
+echod () {
 	if [ "$Debug" = "True" ]
 	then
 		echo -e "$*"
@@ -31,7 +31,7 @@ function echod () {
 # Check argument in parameter
 # -h for print help
 # -d to enable debug
-function CheckArgs () {
+CheckArgs () {
 	case $1 in
 		--help|-h)
 			PrintHelp
@@ -49,7 +49,7 @@ function CheckArgs () {
 # Return :
 # -> 0 if yes
 # -> 1 not
-function CheckHome () {
+CheckHome () {
 	echod "\nf-CheckHome"
 	case $PWD in
 		"$HOME"*)
@@ -66,7 +66,7 @@ function CheckHome () {
 # - if "cd" -> go home
 # - if "/" (root) -> don't execute script
 # - if "cd .." | "cd ./" (aka specials comands) -> don't execute script
-function CheckPath () {
+CheckPath () {
 	echod "\nf-CheckPath"
 	if [ "$Path" = "" ]
 	then
@@ -90,7 +90,7 @@ function CheckPath () {
 #FormatPath:
 #Remove the last "/" if contain last "/"
 #Return: $PathFormatted
-function FormatPath () {
+FormatPath () {
 	if [ "${Path:${#Path}-1:1}" = "/" ]
 	then
 		PathFormatted=$(echo "$Path" | sed 's/.$//')
@@ -104,7 +104,7 @@ function FormatPath () {
 }
 
 #research directory $Path
-function CreateList () {
+CreateList () {
 	#ListDir=$(find "$PWD" -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \) | grep -i "$PathFormatted")
 	ListDirPath=$(find "$PWD" -mindepth 1 -maxdepth 4 -type d \( -name '.*' -prune -o -print \))
 
@@ -178,17 +178,17 @@ function CreateList () {
 
 #FindDirectory:
 # Detect final path
-function FindDirectory () {
+FindDirectory () {
 	echod "\nf-FindDirectory"
 
-	declare -i Position=0
-	declare -i PositionDir=0
+	Position=0
+	PositionDir=0
 
 	#save IFS
 	OldIFS=$IFS
 	IFS=$'\n'
 
-	Arr=("$ListDir")
+	Arr=($ListDir)
 	FirstElement=${Arr[0]}
 	Length=$((${#FirstElement}+1))
 	
