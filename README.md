@@ -82,18 +82,24 @@ To validate a version, we need to pass all these tests:
 
 ## Test form `home`
 
-> DDE: directory doesn't exist
+| Command       | Result                                       | Version 1  |
+| ------------- | -------------------------------------------- | :--------: |
+| `~ $ cd .`    | `~ $`                                        | OK         |
+| `~ $ cd ..`   | `/home/ $`                                   | OK         |
+| `~ $ cd ./`   | `~ $`                                        | OK         |
+| `~ $ cd [DDE]`| `bash: cd: [DDE]: No such file or directory` | OK         |
+| `~ $ cd doc`  | `~/Documents $`                              | OK         |
 
-| Command       | Result                                       |
-| ------------- | -------------------------------------------- |
-| `~$ cd .`     | `~$`                                         |
-| `~$ cd ..`    | `/home/$`                                    |
-| `~$ cd ./`    | `~$`                                         |
-| `~$ cd [DDE]` | `bash: cd: [DDE]: No such file or directory` |
-| `~$ cd doc`   | ``                                           |
-
-* [ ] 
+**NOTE:** `DDE`: Directory Doesn't Exist
 
 ## Test from `root`
 
-* [ ] `~$ cd /`
+| Command       | Result                                       | Version 1  |
+| ------------- | -------------------------------------------- | :--------: |
+| `/ $ cd .`    | `/ $`                                        | OK         |
+| `/ $ cd ./`   | `~ $`                                        | OK         |
+| `/ $ cd [DDE]`| `bash: cd: [DDE]: No such file or directory` | OK         |
+| `/ $ cd etc`  | `/etc/ $`                                    | OK         |
+| `/ $ cd doc`  | `~/Documents $`                              | TEST?      |
+
+**NOTE:** `DDE`: Directory Doesn't Exist
