@@ -84,11 +84,11 @@ To validate a version, we need to pass all these tests:
 
 | Command       | Result                                       | Version 1  |
 | ------------- | -------------------------------------------- | :--------: |
-| `~ $ cd .`    | `~ $`                                        | OK         |
-| `~ $ cd ..`   | `/home/ $`                                   | OK         |
-| `~ $ cd ./`   | `~ $`                                        | OK         |
-| `~ $ cd [DDE]`| `bash: cd: [DDE]: No such file or directory` | OK         |
-| `~ $ cd doc`  | `~/Documents $`                              | OK         |
+| `~ $ cd .`    | `~ $`                                        | ✔️         |
+| `~ $ cd ..`   | `/home/ $`                                   | ✔️         |
+| `~ $ cd ./`   | `~ $`                                        | ✔️         |
+| `~ $ cd [DDE]`| `bash: cd: [DDE]: No such file or directory` | ✔️         |
+| `~ $ cd doc`  | `~/Documents $`                              | ✔️         |
 
 **NOTE:** `DDE`: Directory Doesn't Exist
 
@@ -96,10 +96,10 @@ To validate a version, we need to pass all these tests:
 
 | Command       | Result                                       | Version 1  |
 | ------------- | -------------------------------------------- | :--------: |
-| `/ $ cd .`    | `/ $`                                        | OK         |
-| `/ $ cd ./`   | `~ $`                                        | OK         |
-| `/ $ cd [DDE]`| `bash: cd: [DDE]: No such file or directory` | OK         |
-| `/ $ cd etc`  | `/etc/ $`                                    | OK         |
+| `/ $ cd .`    | `/ $`                                        | ✔️         |
+| `/ $ cd ./`   | `~ $`                                        | ✔️         |
+| `/ $ cd [DDE]`| `bash: cd: [DDE]: No such file or directory` | ✔️         |
+| `/ $ cd etc`  | `/etc/ $`                                    | ✔️         |
 | `/ $ cd doc`  | `~/Documents $`                              | TEST?      |
 
 **NOTE:** `DDE`: Directory Doesn't Exist
